@@ -18,8 +18,8 @@ weather_dim = weather.shape
 ## we search for ties and results
 ## Home win = 1, visitor win = 2, tie = 3
 conditions = [games['visitor_score'] < games['home_score'], games['visitor_score'] > games['home_score'], games['visitor_score'] == games['home_score']]
-choices = ['homeW','awayW','tie']
-games['result'] = np.select(conditions, choices, default=np.nan)
+choices = ['1','2','3']
+results = pd.Series(np.select(conditions, choices, default=np.nan).astype('int'))
 #print(games.describe())
 #farem un drop d'aquelles dades amb valors molt baixos que no influiran en el resultat final
 ##visitor_punts_blocked, home_punts_blocked, visitor_penalties, home_penalties
@@ -60,21 +60,39 @@ home_time_of_possession = pd.to_timedelta(home_time_of_possession).dt.total_seco
 away_time_of_possession = "00:" + games['visitor_time_of_possession']
 away_time_of_possession = pd.to_timedelta(away_time_of_possession).dt.total_seconds() 
 
+#percentatge de FG, interessa més el percentatge que els punts
+home_fg = games['home_field_goals'].str.split('-', n=1, expand=True)
+visitor_fg = games['visitor_field_goals'].str.split('-', n=1,expand=True)
+#hi ha valors nuls representats amb '-', amb la següent linia els tractem
+home_fg = home_fg.replace('', 0)
+home_fg = pd.Series(home_fg[0].astype(float) / home_fg[1].astype(float))
+visitor_fg = visitor_fg.replace('',0)
+visitor_fg = pd.Series(visitor_fg[0].astype(float) / visitor_fg[1].astype(float))
 
-header = ["Home ToP", "Away ToP", "Home First Downs","Away First Downs","Home third downs % comp","Away third downs % comp", "result"]
-test = pd.concat([home_time_of_possession, away_time_of_possession, games['home_first_downs'], games['visitor_first_downs'], third_downs_home, third_downs_away, games['result']], axis=1, keys=header)
-print(games.head(5))
+t = pd.Series(games['home_yards_per_pass'])
 
-#datag = pd.concat(data,axis=1,keys=header)
+header = ["results", "Home ToP", "Away ToP","Home 1st","Away 1st","Home 1st", "Away 1st",
+          "Home Yards P", "Away Yards R", "Home Yards P", "Away Yards R",
+          "Home FG %", "Away FG %",
+          "Home 3rd % comp","Away 3rd % comp"]
+test = pd.concat([results,home_time_of_possession, away_time_of_possession,games['home_first_downs'], 
+games['visitor_first_downs'], games['home_net_yards_passing'], games['home_net_yards_rushing'], games['visitor_net_yards_passing'], games['visitor_net_yards_rushing'],
+home_fg, visitor_fg, third_downs_home, third_downs_away], axis=1, keys=header)
+h2 = ["h-yards", "ToP", "results"]
+
+print(test.head(5))
+print(games.dtypes)
+
+'''
+correlation = test.corr()['results'].to_frame().T
+plt.subplots(figsize=(40,1))
+sns.heatmap(correlation)
+plt.show()
+'''
 
 #datag['home_time_of_possession'] = "00:" + datag['home_time_of_possession']
 #print(datag['home_time_of_possession'].head(5))
 #datag['home_time_of_possession'] = pd.to_timedelta(datag['home_time_of_possession']).dt.total_seconds()
 #print(games.head(5))
 
-#sns.regplot(x="home_time_of_possession", y='result', data=datag)
-sns.pairplot(test, hue="result")
-plt.show()
-
-#sb.pairrplot(games, hue="result")
-#plt.show()
+#sns.regplot(x="Home ToP", y='result', data=test)
