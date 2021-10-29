@@ -12,6 +12,8 @@ def read_data():
     weather = pd.read_csv(data_folder + 'nfl_game_weather.csv')
     return games, weather
 
-
-
+def return_data_info():
+    games, weater = read_data()
+    print('Total games: ', games.shape[0],'.')
+    print('Number of columns from games: ', games.shape[1],'.')
 
