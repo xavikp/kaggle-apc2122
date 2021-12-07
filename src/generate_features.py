@@ -67,28 +67,67 @@ def generate_features():
   visitor_fg = visitor_fg.replace('',0)
   visitor_fg = pd.Series(visitor_fg[0].astype(float) / visitor_fg[1].astype(float))
 
-  t = pd.Series(games['home_yards_per_pass'])
+  #intercepcions
+  int_yards_away = games['visitor_kick_return_splits'].str.split('-', n=1,expand=True)
+  int_home_yards = games['home_kick_return_splits'].str.split('-', n=1,expand=True)
+  int_yards_away = pd.Series(int_yards_away[1])
+  int_yards_home = pd.Series(int_home_yards[1])
 
-  header = ["results", "Home ToP", "Away ToP","Home 1st",
-            "Away 1st","Home Net Pass", "Home Net Rush",
-            "Away Net P", "Away Net Rush", "Home FG", "Away FG",
-            "Home 3rd %", "Away 3rd %"]
+  #faltes, treuen potencia a l'atac
+  pen_yards_away = games['visitor_kick_return_splits'].str.split('-', n=1,expand=True)
+  pen_yards_home = games['home_kick_return_splits'].str.split('-', n=1,expand=True)
+  pen_yards_away = pd.Series(pen_yards_away[1])
+  pen_yards_home = pd.Series(pen_yards_home[1])
+
+
+  header = [
+            "results", "Home ToP", "Away ToP", 
+            "home Score", "away Score",
+            "Home #Plays", "Away #Plays",
+            "Home 1st","Away 1st", 
+            "Home 1st P", "Home 1st R",
+            "Away 1st P", "Away 1st R",
+            "Home avg gain", "Away avg gain",
+            "Home Net Y" ,"Home Net P", "Home Net R",
+            "Away Net Y","Away Net P", "Away Net R", 
+            "Home FG", "Away FG",
+            "Home 3rd %", "Away 3rd %",
+            "Home pens", 
+            "Away pens", 
+          ]
   test = pd.concat([
-            results,home_time_of_possession, away_time_of_possession,games['home_first_downs'], 
-            games['visitor_first_downs'], games['home_net_yards_passing'], games['home_net_yards_rushing'], 
-            games['visitor_net_yards_passing'], games['visitor_net_yards_rushing'],
-            home_fg, visitor_fg, third_downs_home, third_downs_away], axis=1, keys=header)
+            results,home_time_of_possession, away_time_of_possession, 
+            games['home_score'], games['visitor_score'],
+            games['home_total_plays'], games['visitor_total_plays'],
+            games['home_first_downs'],games['visitor_first_downs'],
+            games['home_passing_first_downs'], games['home_rushing_first_downs'],
+            games['visitor_passing_first_downs'], games['visitor_rushing_first_downs'],
+            games['home_avg_gain'], games['visitor_avg_gain'], 
+            games['home_net_yards'], games['home_net_yards_passing'], games['home_net_yards_rushing'],
+            games['visitor_net_yards'], games['visitor_net_yards_passing'], games['visitor_net_yards_rushing'],
+            home_fg, visitor_fg, 
+            third_downs_home, third_downs_away,
+            games['home_penalties'], 
+            games['visitor_penalties'],
+            ],
+            axis=1, keys=header)
   h2 = ["h-yards", "ToP", "results"]
+
+
+  test.dropna()
+  print("Total entrances after dropping null values: ",test.shape[0], ".")
+  return test
 
   print(games.head(5))
   print(games.dtypes)
+
 
   correlation = test.corr()['results'].to_frame().T
   plt.subplots(figsize=(40,1))
   sns.heatmap(correlation)
   plt.show()
 
-generate_features()
+#generate_features()
 
 #datag['home_time_of_possession'] = "00:" + datag['home_time_of_possession']
 #print(datag['home_time_of_possession'].head(5))
