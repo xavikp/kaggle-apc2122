@@ -5,10 +5,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 pd.options.display.max_columns = 60
-games, weather = read_data()
+games = read_data()
 
 games_dim = games.shape
-weather_dim = weather.shape
 
 def generate_features():
 
