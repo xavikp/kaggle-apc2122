@@ -30,6 +30,7 @@ Han afectat als resultats perquè sense aquests canvis no podriem tenir resultat
 | KNN | 15 neighbors | 69.24%, 69.15%, 45.73% | 1.16s |
 
 ## Demo
+Recorda fer ``` pip install -r requirements.txt ```!! En cas que no funcioni prova amb *requirements_old.txt*.
 Per tal de fer una prova, es pot fer servir amb la següent comanda, si posem 0 no s'executarà aquell model.   
 ``` python3 demo/demo.py -[svm] 1 -[rf] 0 -[knn] 0 ```  
 En aquest cas se't demanaràn les següents dades, perquè funcioni han de ser totes positives:
