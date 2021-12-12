@@ -15,7 +15,7 @@ Si es volen provar els experiments executar la següent comanda, si posem 0 no s
 ``` python3 src/test_model.py -[svm] 1 -[rf] 0 -[knn] 0 ```
 
 Ens printarà per consola uns resultats i també farà algunes figures.
-
+Per fer servir el notebook recomano fer correr totes les cel·les de cop.
 
 ### Preprocessat
 Les proves de preprocessat han estat netejar molt el dataset perquè gran part dels atributs no eren llegibles per la llibreria *pandas* degut al seu format i llavors s'ha passat a un format numèric bàsic per poder fer proves, aquest canvi ha estat per exemple passar el temps de possessió de *mm:ss* a *ssss.ms* o els splits de FG que es pot calcular la seva probabilitat i no tenir un X-X-XX%%.
