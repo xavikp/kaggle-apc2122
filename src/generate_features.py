@@ -110,27 +110,8 @@ def generate_features():
             games['visitor_penalties'],
             ],
             axis=1, keys=header)
-  h2 = ["h-yards", "ToP", "results"]
 
 
   test.dropna()
   print("Total entrances after dropping null values: ",test.shape[0], ".")
   return test
-
-  print(games.head(5))
-  print(games.dtypes)
-
-
-  correlation = test.corr()['results'].to_frame().T
-  plt.subplots(figsize=(40,1))
-  sns.heatmap(correlation)
-  plt.show()
-
-#generate_features()
-
-#datag['home_time_of_possession'] = "00:" + datag['home_time_of_possession']
-#print(datag['home_time_of_possession'].head(5))
-#datag['home_time_of_possession'] = pd.to_timedelta(datag['home_time_of_possession']).dt.total_seconds()
-#print(games.head(5))
-
-#sns.regplot(x="Home ToP", y='result', data=test)
